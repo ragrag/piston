@@ -1,9 +1,9 @@
 <h1 align="center">
     <a href="https://github.com/engineer-man/piston"><img src="var/docs/images/icon_circle.svg" width="25" height="25" alt="engineer-man piston"></a>
-  Piston
+  Piston Judge
 </h1>
 
-<h3 align="center">A high performance general purpose code execution engine.</h3>
+<h3 align="center">A Piston v3 fork that supports batch submissions for the same source code as well as code judge evalutation</h3>
 <br>
 
 <p align="center">
@@ -32,6 +32,7 @@
 </h4>
 
 ---
+
 <br>
 
 # About
@@ -43,11 +44,12 @@ possibly malicious code without fear from any harmful effects.
 <br>
 
 It's used in numerous places including:
-* [EMKC Challenges](https://emkc.org/challenges),
-* [EMKC Weekly Contests](https://emkc.org/contests),
-* [Engineer Man Discord Server](https://discord.gg/engineerman),
-* [I Run Code (Discord Bot)](https://github.com/engineer-man/piston-bot) bot as well as 1300+ other servers
-and 100+ direct integrations.
+
+- [EMKC Challenges](https://emkc.org/challenges),
+- [EMKC Weekly Contests](https://emkc.org/contests),
+- [Engineer Man Discord Server](https://discord.gg/engineerman),
+- [I Run Code (Discord Bot)](https://github.com/engineer-man/piston-bot) bot as well as 1300+ other servers
+  and 100+ direct integrations.
 
 To get it in your own server, go here: https://emkc.org/run.
 
@@ -67,17 +69,20 @@ https://emkc.org/api/v1/piston
 ```
 
 #### GET
+
 ```
 https://emkc.org/api/v1/piston/versions
 ```
+
 #### POST
+
 ```
 https://emkc.org/api/v1/piston/execute
 ```
 
 > Important Note: The Piston API is rate limited to 5 requests per second. If you have a need for more requests than that
-and it's for a good cause, please reach out to me (EngineerMan#0001) on [Discord](https://discord.gg/engineerman)
-so we can discuss potentially getting you an unlimited key.
+> and it's for a good cause, please reach out to me (EngineerMan#0001) on [Discord](https://discord.gg/engineerman)
+> so we can discuss potentially getting you an unlimited key.
 
 <br>
 
@@ -158,11 +163,13 @@ The container exposes an API on port 6969 by default.
 This is used by the CLI to carry out running jobs and package managment.
 
 #### Runtimes Endpoint
+
 `GET /runtimes`
 This endpoint will return the supported languages along with the current version, author and aliases. To execute
 code for a particular language using the `/jobs` endpoint, either the name or one of the aliases must
 be provided, along with the version.
 Multiple versions of the same language may be present at the same time, and may be selected when running a job.
+
 ```json
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -189,8 +196,10 @@ Content-Type: application/json
 ```
 
 #### Execute Endpoint
+
 `POST /jobs`
 This endpoint requests execution of some arbitrary code.
+
 - `language` (**required**) The language to use for execution, must be a string and must be installed.
 - `version` (**required**) The version of the language to use for execution, must be a string containing a SemVer selector for the version or the specific version number to use.
 - `files` (**required**) An array of files containing code or other data that should be used for execution.
@@ -204,30 +213,28 @@ This endpoint requests execution of some arbitrary code.
 
 ```json
 {
-    "language": "js",
-    "version": "15.10.0",
-    "files":[
-        {
-            "name": "my_cool_code.js",
-            "content": "console.log(process.argv)"
-        }
-    ],
-    "main": "my_cool_code.js",
-    "stdin": "",
-    "args": [
-        "1",
-        "2",
-        "3"
-    ],
-    "compile_timeout": 10000,
-    "run_timeout": 3000
+  "language": "js",
+  "version": "15.10.0",
+  "files": [
+    {
+      "name": "my_cool_code.js",
+      "content": "console.log(process.argv)"
+    }
+  ],
+  "main": "my_cool_code.js",
+  "stdin": "",
+  "args": ["1", "2", "3"],
+  "compile_timeout": 10000,
+  "run_timeout": 3000
 }
 ```
+
 A typical response upon successful execution will contain 1 or 2 keys `run` and `compile`.
 `compile` will only be present if the language requested requires a compile stage.
 
 Each of these keys has an identical structure, containing both a `stdout` and `stderr` key, which is a string containing the text outputted during the stage into each buffer.
 It also contains the `code` and `signal` which was returned from each process.
+
 ```json
 HTTP/1.1 200 OK
 Content-Type: application/json
@@ -241,7 +248,9 @@ Content-Type: application/json
   }
 }
 ```
+
 If a problem exists with the request, a `400` status code is returned and the reason in the `message` key.
+
 ```json
 HTTP/1.1 400 Bad Request
 Content-Type: application/json
@@ -254,6 +263,7 @@ Content-Type: application/json
 <br>
 
 # Supported Languages
+
 `awk`,
 `bash`,
 `brainfuck`,
@@ -306,9 +316,11 @@ The source file is either ran or compiled and ran (in the case of languages like
 <br>
 
 # Security
+
 Docker provides a great deal of security out of the box in that it's separate from the system.
 Piston takes additional steps to make it resistant to
 various privilege escalation, denial-of-service, and resource saturation threats. These steps include:
+
 - Disabling outgoing network interaction
 - Capping max processes at 256 by default (resists `:(){ :|: &}:;`, `while True: os.fork()`, etc.)
 - Capping max files at 2048 (resists various file based attacks)
@@ -321,4 +333,5 @@ various privilege escalation, denial-of-service, and resource saturation threats
 <br>
 
 # License
+
 Piston is licensed under the MIT license.
