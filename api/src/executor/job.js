@@ -18,7 +18,7 @@ let gid = 0;
 const Verdict = {
   AC: "AC",
   WA: "WA",
-  COMPILATON: "COMPILATION",
+  COMPILATION: "COMPILATION",
   RUNTIME: "RUNTIME",
   TLE: "TLE",
   MLE: "MLE",
