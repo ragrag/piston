@@ -234,9 +234,9 @@ class Job {
   evaluate(run, compile) {
     for (let i = 0; i < run.length; i++) {
       //Runtime error
-      let expected_output = this.expected_output 
-      ? this.expected_output[i]
-      : null,
+      let expected_output = this.expected_output
+        ? this.expected_output[i]
+        : null;
       if (run[i].stderr) {
         return {
           compile,
@@ -245,7 +245,7 @@ class Job {
             status: Verdict.RUNTIME,
             stdout: run[i].stderr,
             stdin: this.stdin[i],
-            expected_output
+            expected_output,
           },
         };
       }
@@ -258,17 +258,14 @@ class Job {
             status: Verdict.TLE,
             stdout: run[i].stdout,
             stdin: this.stdin[i],
-            expected_output
+            expected_output,
           },
         };
       }
       //Wrong Answer
       if (this.expected_output) {
         run[i].stdout = run[i].stdout.replace(/^\s+|\s+$/g, "");
-        expected_output = expected_output.replace(
-          /^\s+|\s+$/g,
-          ""
-        );
+        expected_output = expected_output.replace(/^\s+|\s+$/g, "");
         if (run[i].stdout !== this.expected_output[i]) {
           return {
             compile,
@@ -277,7 +274,7 @@ class Job {
               status: Verdict.WA,
               stdout: run[i].stdout,
               stdin: this.stdin[i],
-              expected_output
+              expected_output,
             },
           };
         }
