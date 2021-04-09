@@ -4,8 +4,8 @@ ENV DEBIAN_FRONTEND=noninteractive
 
 RUN dpkg-reconfigure -p critical dash
 RUN for i in $(seq 1001 1500); do \
-    groupadd -g $i runner$i && \
-    useradd -M runner$i -g $i -u $i ; \
+        groupadd -g $i runner$i && \
+        useradd -M runner$i -g $i -u $i ; \
     done
 RUN apt-get update && \
     apt-get install -y libxml2 gnupg tar coreutils util-linux libc6-dev \
@@ -18,7 +18,7 @@ RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 ENV NODE_ENV=production
 
 WORKDIR /piston_api
-COPY ["package.json", "package-lock.json", "./",]
+COPY ["package.json", "package-lock.json",".env", "./"]
 RUN npm i
 COPY ./src ./src
 
