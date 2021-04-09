@@ -67,6 +67,13 @@ const app = express();
   app.use(body_parser.urlencoded({ extended: true }));
   app.use(body_parser.json());
 
+  if (process.env.SECURE_WITH_API_KEY === "true")
+    app.use(function (req, res, next) {
+      const apiKey = req.headers[process.env.API_KEY_HEADER];
+      if (apiKey !== process.env.API_KEY) return req.status(401).send();
+      next();
+    });
+
   const validate = (req, res, next) => {
     const errors = validationResult(req);
 

@@ -1,2 +1,3 @@
 data/
 restart.ps1
+api/.env
