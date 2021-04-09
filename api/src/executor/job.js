@@ -264,8 +264,11 @@ class Job {
       }
       //Wrong Answer
       if (this.expected_output) {
-        run[i].stdout.replace(/^\s+|\s+$/g, "");
-        this.expected_output[i].replace(/^\s+|\s+$/g, "");
+        run[i] = run[i].stdout.replace(/^\s+|\s+$/g, "");
+        this.expected_output[i] = this.expected_output[i].replace(
+          /^\s+|\s+$/g,
+          ""
+        );
         if (run[i].stdout !== this.expected_output[i]) {
           return {
             compile,
