@@ -171,11 +171,15 @@ class Job {
       );
     }
 
-    if (compile.code === 1 || compile.signal === "SIGKILL")
+    if (
+      (this.runtime.compiled && compile?.code === 1) ||
+      compile?.signal === "SIGKILL"
+    )
       return {
         compile,
         run,
       };
+
     logger.debug("Running");
 
     for (let i = 0; i < this.stdin.length; i++) {
