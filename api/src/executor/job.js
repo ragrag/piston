@@ -162,7 +162,7 @@ class Job {
     logger.debug("Compiling");
 
     let compile;
-
+    let run = [];
     if (this.runtime.compiled) {
       compile = await this.safe_call(
         path.join(this.runtime.pkgdir, "compile"),
@@ -171,8 +171,12 @@ class Job {
       );
     }
 
+    if (compile.code === 1 || compile.signal === "SIGKILL")
+      return {
+        compile,
+        run,
+      };
     logger.debug("Running");
-    let run = [];
 
     for (let i = 0; i < this.stdin.length; i++) {
       run[i] = this.safe_call(
