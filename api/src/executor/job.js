@@ -73,7 +73,7 @@ class Job {
 
   async safe_call(file, args, timeout, stdin = "") {
     return new Promise((resolve, reject) => {
-      const unshare = config.enable_unshare ? ["unshare", "-n", "-r"] : [];
+      const nonetwork = config.disable_networking ? ["nosocket"] : [];
 
       const prlimit = [
         "prlimit",
@@ -81,7 +81,7 @@ class Job {
         "--nofile=" + config.max_open_files,
       ];
 
-      const proc_call = [...prlimit, ...unshare, "bash", file, ...args];
+      const proc_call = [...prlimit, ...nonetwork, "bash", file, ...args];
 
       var stdout = "";
       var stderr = "";
@@ -172,7 +172,6 @@ class Job {
     }
 
     logger.debug("Running");
-
     let run = [];
 
     for (let i = 0; i < this.stdin.length; i++) {
@@ -185,7 +184,6 @@ class Job {
     }
 
     run = await Promise.all(run);
-
     this.state = job_states.EXECUTED;
 
     return {
