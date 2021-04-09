@@ -194,8 +194,8 @@ class Job {
 
     //Compilation error short-circuit
     if (
-      (this.runtime.compiled && compile.stderr) ||
-      compile.signal === "SIGKILL"
+      this.runtime.compiled &&
+      (compile.stderr || compile.signal === "SIGKILL")
     ) {
       return {
         compile,
