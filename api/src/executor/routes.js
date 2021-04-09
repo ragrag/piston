@@ -18,7 +18,8 @@ module.exports = {
     body("stdin").isArray({ max: process.env.MAX_BATCH_STDIN || 15 }),
     body("expected_output")
       .isArray()
-      .if((value, { req }) => req.body.stdin.length === value.length),
+      .custom((value, { req }) => req.body.stdin.length === value.length)
+      .optional(),
     body("args").isArray(),
     body("args.*").isString(),
   ],
