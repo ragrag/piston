@@ -18,7 +18,7 @@ RUN sed -i '/en_US.UTF-8/s/^# //g' /etc/locale.gen && locale-gen
 ENV NODE_ENV=production
 
 WORKDIR /piston_api
-COPY ["package.json", "package-lock.json",".env", "./",]
+COPY ["package.json", "package-lock.json", "./",]
 RUN npm i
 COPY ./src ./src
 
