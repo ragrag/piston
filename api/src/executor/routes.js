@@ -26,36 +26,41 @@ module.exports = {
 
   // POST /jobs
   async run_job(req, res) {
-    const runtime = get_latest_runtime_matching_language_version(
-      req.body.language,
-      req.body.version
-    );
+    try {
+      const runtime = get_latest_runtime_matching_language_version(
+        req.body.language,
+        req.body.version
+      );
 
-    if (runtime === undefined) {
-      return res.status(400).send({
-        message: `${req.body.language}-${req.body.version} runtime is unknown`,
+      if (runtime === undefined) {
+        return res.status(400).send({
+          message: `${req.body.language}-${req.body.version} runtime is unknown`,
+        });
+      }
+
+      const job = new Job({
+        runtime,
+        alias: req.body.language,
+        files: req.body.files,
+        args: req.body.args,
+        stdin: req.body.stdin,
+        expected_output: req.body.expected_output,
+        timeouts: {
+          run: req.body.run_timeout,
+          compile: req.body.compile_timeout,
+        },
+        main: req.body.main,
       });
+
+      await job.prime();
+
+      let result = await job.execute();
+
+      await job.cleanup();
+
+      return res.status(200).send(result);
+    } catch (err) {
+      return res.status(500).send();
     }
-
-    const job = new Job({
-      runtime,
-      alias: req.body.language,
-      files: req.body.files,
-      args: req.body.args,
-      stdin: req.body.stdin,
-      timeouts: {
-        run: req.body.run_timeout,
-        compile: req.body.compile_timeout,
-      },
-      main: req.body.main,
-    });
-
-    await job.prime();
-
-    const result = await job.execute();
-
-    await job.cleanup();
-
-    return res.status(200).send(result);
   },
 };

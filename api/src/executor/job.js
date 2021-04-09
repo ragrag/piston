@@ -15,13 +15,34 @@ const job_states = {
 let uid = 0;
 let gid = 0;
 
+const Verdict = {
+  AC: "AC",
+  WA: "WA",
+  COMPILATON: "COMPILATION",
+  RUNTIME: "RUNTIME",
+  TLE: "TLE",
+  MLE: "MLE",
+  PENDING: "PENDING",
+  ERROR: "ERROR",
+};
+
 class Job {
-  constructor({ runtime, files, args, stdin, timeouts, main, alias }) {
+  constructor({
+    runtime,
+    files,
+    args,
+    stdin,
+    expected_output,
+    timeouts,
+    main,
+    alias,
+  }) {
     this.uuid = uuidv4();
     this.runtime = runtime;
     this.files = files;
     this.args = args;
     this.stdin = stdin;
+    this.expected_output = expected_output;
     this.timeouts = timeouts;
     this.main = main;
     this.alias = alias;
@@ -135,13 +156,13 @@ class Job {
       proc.on("exit", (code, signal) => {
         exit_cleanup();
 
-        resolve({ stdout, stderr, code, signal });
+        resolve({ stdout, stderr, code, signal, stdin });
       });
 
       proc.on("error", (err) => {
         exit_cleanup();
 
-        reject({ error: err, stdout, stderr });
+        reject({ error: err, stdout, stderr, stdin });
       });
     });
   }
@@ -171,14 +192,22 @@ class Job {
       );
     }
 
+    //Compilation error short-circuit
     if (
-      (this.runtime.compiled && compile?.code === 1) ||
-      compile?.signal === "SIGKILL"
-    )
+      (this.runtime.compiled && compile.stderr) ||
+      compile.signal === "SIGKILL"
+    ) {
       return {
         compile,
         run,
+        verdict: {
+          status: Verdict.COMPILATION,
+          output: compile.stderr || "Something went wrong during compilation",
+          stdin: null,
+          expectedOutput: null,
+        },
       };
+    }
 
     logger.debug("Running");
 
@@ -194,15 +223,74 @@ class Job {
     run = await Promise.all(run);
     this.state = job_states.EXECUTED;
 
-    return {
-      compile,
-      run,
-    };
+    return this.evaluate(run, compile);
   }
 
   async cleanup() {
     logger.info(`Cleaning up job uuid=${this.uuid}`);
     await fs.rm(this.dir, { recursive: true, force: true });
+  }
+
+  evaluate(run, compile) {
+    for (let i = 0; i < run.length; i++) {
+      //Runtime error
+      if (run[i].stderr) {
+        return {
+          compile,
+          run,
+          verdict: {
+            status: Verdict.RUNTIME,
+            stdout: run[i].stderr,
+            stdin: this.stdin[i],
+            expectedOutput: this.expected_output[i],
+          },
+        };
+      }
+      //Timelimit error
+      if (run[i].signal === "SIGKILL") {
+        return {
+          compile,
+          run,
+          verdict: {
+            status: Verdict.TLE,
+            stdout: "Time limit exceeded",
+            stdin: this.stdin[i],
+            expectedOutput:
+              this.expected_output && this.expected_output[i]
+                ? this.expected_output[i]
+                : null,
+          },
+        };
+      }
+      //Wrong Answer
+      if (this.expected_output) {
+        run[i].stdout.replace(/^\s+|\s+$/g, "");
+        this.expected_output[i].replace(/^\s+|\s+$/g, "");
+        if (run[i].stdout !== this.expected_output[i]) {
+          return {
+            compile,
+            run,
+            verdict: {
+              status: Verdict.WA,
+              stdout: run[i].stdout,
+              stdin: this.stdin[i],
+              expectedOutput: this.expected_output[i],
+            },
+          };
+        }
+      }
+    }
+    //Accepted
+    return {
+      compile,
+      run,
+      verdict: {
+        status: Verdict.AC,
+        stdout: null,
+        stdin: null,
+        expectedOutput: null,
+      },
+    };
   }
 }
 
