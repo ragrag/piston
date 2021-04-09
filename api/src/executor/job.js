@@ -234,6 +234,9 @@ class Job {
   evaluate(run, compile) {
     for (let i = 0; i < run.length; i++) {
       //Runtime error
+      let expected_output = this.expected_output 
+      ? this.expected_output[i]
+      : null,
       if (run[i].stderr) {
         return {
           compile,
@@ -242,7 +245,7 @@ class Job {
             status: Verdict.RUNTIME,
             stdout: run[i].stderr,
             stdin: this.stdin[i],
-            expectedOutput: this.expected_output[i],
+            expected_output
           },
         };
       }
@@ -253,19 +256,16 @@ class Job {
           run,
           verdict: {
             status: Verdict.TLE,
-            stdout: "Time limit exceeded",
+            stdout: run[i].stdout,
             stdin: this.stdin[i],
-            expectedOutput:
-              this.expected_output && this.expected_output[i]
-                ? this.expected_output[i]
-                : null,
+            expected_output
           },
         };
       }
       //Wrong Answer
       if (this.expected_output) {
         run[i].stdout = run[i].stdout.replace(/^\s+|\s+$/g, "");
-        this.expected_output[i] = this.expected_output[i].replace(
+        expected_output = expected_output.replace(
           /^\s+|\s+$/g,
           ""
         );
@@ -277,7 +277,7 @@ class Job {
               status: Verdict.WA,
               stdout: run[i].stdout,
               stdin: this.stdin[i],
-              expectedOutput: this.expected_output[i],
+              expected_output
             },
           };
         }
@@ -291,7 +291,7 @@ class Job {
         status: Verdict.AC,
         stdout: null,
         stdin: null,
-        expectedOutput: null,
+        expected_output: null,
       },
     };
   }
