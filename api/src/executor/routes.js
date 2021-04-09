@@ -16,13 +16,9 @@ module.exports = {
     body("compile_timeout").isNumeric(),
     body("run_timeout").isNumeric(),
     body("stdin").isArray({ max: process.env.MAX_BATCH_STDIN || 15 }),
-    body("expectedOutput")
+    body("expected_output")
       .isArray()
-      .if(
-        (value, { req }) =>
-          req.body.stdin && req.body.stdin.length === value.length
-      )
-      .optional(),
+      .if((value, { req }) => req.body.stdin.length === value.length),
     body("args").isArray(),
     body("args.*").isString(),
   ],
