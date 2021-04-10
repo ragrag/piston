@@ -16,6 +16,8 @@ const { validationResult } = require("express-validator");
 const logger = Logger.create("index");
 const app = express();
 
+app.use(cors());
+
 (async () => {
   logger.info("Setting loglevel to", config.log_level);
   Logger.setLogLevel(config.log_level);
@@ -67,7 +69,6 @@ const app = express();
 
   app.use(body_parser.urlencoded({ extended: true }));
   app.use(body_parser.json());
-  app.use(cors());
 
   if (process.env.SECURE_WITH_API_KEY === "true")
     app.use(function (req, res, next) {
