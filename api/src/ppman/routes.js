@@ -5,6 +5,7 @@ const config = require("../config");
 const { Package } = require("./package");
 
 const get_package_list = async () => {
+  console.log(config.repo_url);
   const repo_content = await fetch(config.repo_url).then((x) => x.text());
 
   const entries = repo_content.split("\n").filter((x) => x.length > 0);
