@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 require("nocamel");
 require("dotenv").config();
+const cors = requite("cors");
 const Logger = require("logplease");
 const express = require("express");
 const globals = require("./globals");
@@ -66,6 +67,7 @@ const app = express();
 
   app.use(body_parser.urlencoded({ extended: true }));
   app.use(body_parser.json());
+  app.use(cors());
 
   if (process.env.SECURE_WITH_API_KEY === "true")
     app.use(function (req, res, next) {
