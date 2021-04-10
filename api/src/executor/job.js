@@ -70,7 +70,7 @@ class Job {
 
     logger.debug(`Transfering ownership uid=${this.uid} gid=${this.gid}`);
 
-    await fs.mkdir(this.dir, { mode: 0o700 });
+    await fs.mkdir(this.dir);
     await fs.chown(this.dir, this.uid, this.gid);
 
     for (const file of this.files) {
@@ -99,7 +99,7 @@ class Job {
 
       var stdout = "";
       var stderr = "";
-
+      this.shuffle_ids();
       const proc = cp.spawn(proc_call[0], proc_call.splice(1), {
         env: {
           ...this.runtime.env_vars,
