@@ -299,8 +299,8 @@ class Job {
       run,
       verdict: {
         status: Verdict.AC,
-        stdout: run.length > 1 ? run[0].stdout : null,
-        stdin: this.stdin.length > 1 ? this.stdin[0] : null,
+        stdout: run.length > 0 ? run[0].stdout : null,
+        stdin: this.stdin.length > 0 ? this.stdin[0] : null,
         expected_output: null,
       },
     };
