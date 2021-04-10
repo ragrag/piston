@@ -196,7 +196,7 @@ class Job {
         run,
         result: {
           status: Verdict.COMPILATION,
-          output: compile.stderr || "Something went wrong during compilation",
+          stdout: compile.stderr || "Something went wrong during compilation",
           stdin: null,
           expectedOutput: null,
         },
