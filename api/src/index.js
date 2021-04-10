@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 require("nocamel");
 require("dotenv").config();
-const cors = requite("cors");
+const cors = require("cors");
 const Logger = require("logplease");
 const express = require("express");
 const globals = require("./globals");
