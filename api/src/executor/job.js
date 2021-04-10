@@ -53,12 +53,7 @@ class Job {
       throw new Error(`Main file "${this.main}" will not be written to disk`);
     }
 
-    this.gid = config.runner_gid_min + gid;
-
-    gid++;
-
-    gid %= config.runner_gid_max - config.runner_gid_min + 1;
-    this.shuffle();
+    this.shuffle_ids();
 
     this.state = job_states.READY;
     this.dir = path.join(
@@ -75,7 +70,7 @@ class Job {
 
     logger.debug(`Transfering ownership uid=${this.uid} gid=${this.gid}`);
 
-    await fs.mkdir(this.dir);
+    await fs.mkdir(this.dir, { mode: 0o700 });
     await fs.chown(this.dir, this.uid, this.gid);
 
     for (const file of this.files) {
@@ -104,7 +99,7 @@ class Job {
 
       var stdout = "";
       var stderr = "";
-      this.shuffle();
+
       const proc = cp.spawn(proc_call[0], proc_call.splice(1), {
         env: {
           ...this.runtime.env_vars,
@@ -311,12 +306,15 @@ class Job {
     };
   }
 
-  shuffle() {
+  shuffle_ids() {
     this.uid = config.runner_uid_min + uid;
+    this.gid = config.runner_gid_min + gid;
 
     uid++;
+    gid++;
 
     uid %= config.runner_uid_max - config.runner_uid_min + 1;
+    gid %= config.runner_gid_max - config.runner_gid_min + 1;
   }
 }
 
