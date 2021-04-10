@@ -184,6 +184,7 @@ class Job {
 
     let compile;
     let run = [];
+    console.log(this.runtime);
     if (this.runtime.compiled) {
       compile = await this.safe_call(
         path.join(this.runtime.pkgdir, "compile"),
@@ -219,8 +220,8 @@ class Job {
         this.stdin[i]
       );
     }
-
     run = await Promise.all(run);
+
     this.state = job_states.EXECUTED;
 
     return this.evaluate(run, compile);
