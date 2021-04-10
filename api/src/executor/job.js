@@ -184,7 +184,7 @@ class Job {
 
     let compile;
     let run = [];
-    console.log(this.runtime);
+
     if (this.runtime.compiled) {
       compile = await this.safe_call(
         path.join(this.runtime.pkgdir, "compile"),
@@ -222,6 +222,7 @@ class Job {
   async run_in_parallel() {
     let run = [];
     for (let i = 0; i < this.stdin.length; i++) {
+      console.log(this.main);
       run[i] = this.safe_call(
         path.join(this.runtime.pkgdir, "run"),
         [this.main, ...this.args],
