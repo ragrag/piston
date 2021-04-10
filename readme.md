@@ -3,7 +3,7 @@
   Piston
 </h1>
 
-<h3 align="center">A high performance general purpose code execution engine.</h3>
+<h3 align="center">A fork from Piston, a high performance general purpose code execution engine that supports batch submissions and code evaluation.</h3>
 <br>
 
 <p align="center">
