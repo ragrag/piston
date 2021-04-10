@@ -212,7 +212,7 @@ class Job {
     console.log(this.main);
     logger.debug("Running");
     if (this.runtime.language === "java") {
-      this.main = this.main.slice(0, -5);
+      if (this.runtime.compiled) this.main = this.main.slice(0, -5);
       run = await this.run_in_band();
     } else run = await this.run_in_parallel();
 
