@@ -194,7 +194,7 @@ class Job {
       return {
         compile,
         run,
-        verdict: {
+        result: {
           status: Verdict.COMPILATION,
           output: compile.stderr || "Something went wrong during compilation",
           stdin: null,
@@ -254,7 +254,7 @@ class Job {
         return {
           compile,
           run,
-          verdict: {
+          result: {
             status: Verdict.RUNTIME,
             stdout: run[i].stderr,
             stdin: this.stdin[i],
@@ -267,7 +267,7 @@ class Job {
         return {
           compile,
           run,
-          verdict: {
+          result: {
             status: Verdict.TLE,
             stdout: run[i].stdout,
             stdin: this.stdin[i],
@@ -283,7 +283,7 @@ class Job {
           return {
             compile,
             run,
-            verdict: {
+            result: {
               status: Verdict.WA,
               stdout: run[i].stdout,
               stdin: this.stdin[i],
@@ -297,7 +297,7 @@ class Job {
     return {
       compile,
       run,
-      verdict: {
+      result: {
         status: Verdict.AC,
         stdout: run.length > 0 ? run[0].stdout : null,
         stdin: this.stdin.length > 0 ? this.stdin[0] : null,
