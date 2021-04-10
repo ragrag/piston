@@ -211,7 +211,16 @@ class Job {
     }
 
     logger.debug("Running");
+    if (this.runtime.language === "java") {
+      run = await this.run_in_band();
+    } else run = await this.run_in_parallel();
 
+    this.state = job_states.EXECUTED;
+
+    return this.evaluate(run, compile);
+  }
+  async run_in_parallel() {
+    let run = [];
     for (let i = 0; i < this.stdin.length; i++) {
       run[i] = this.safe_call(
         path.join(this.runtime.pkgdir, "run"),
@@ -221,12 +230,21 @@ class Job {
       );
     }
     run = await Promise.all(run);
-
-    this.state = job_states.EXECUTED;
-
-    return this.evaluate(run, compile);
+    return run;
   }
 
+  async run_in_band() {
+    let run = [];
+    for (let i = 0; i < this.stdin.length; i++) {
+      run[i] = await this.safe_call(
+        path.join(this.runtime.pkgdir, "run"),
+        [this.main, ...this.args],
+        this.timeouts.run,
+        this.stdin[i]
+      );
+    }
+    return run;
+  }
   async cleanup() {
     logger.info(`Cleaning up job uuid=${this.uuid}`);
     await fs.rm(this.dir, { recursive: true, force: true });
