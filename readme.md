@@ -1,6 +1,6 @@
 <h1 align="center">
     <a href="https://github.com/engineer-man/piston"><img src="var/docs/images/icon_circle.svg" width="25" height="25" alt="engineer-man piston"></a>
-  Piston
+  Piston Batch
 </h1>
 
 <h3 align="center">A fork from Piston, a high performance general purpose code execution engine that supports batch submissions and code evaluation.</h3>
