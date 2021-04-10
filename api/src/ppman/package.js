@@ -34,9 +34,9 @@ class Package {
   }
 
   async install() {
-    // if (this.installed) {
-    //     throw new Error('Already installed');
-    // }
+    if (this.installed) {
+      throw new Error("Already installed");
+    }
 
     logger.info(`Installing ${this.language}-${this.version.raw}`);
 
@@ -134,6 +134,29 @@ class Package {
     );
 
     logger.info(`Installed ${this.language}-${this.version.raw}`);
+
+    return {
+      language: this.language,
+      version: this.version.raw,
+    };
+  }
+
+  async uninstall() {
+    logger.info(`Uninstalling ${this.language}-${this.version.raw}`);
+
+    logger.debug("Finding runtime");
+    const runtime = runtime.get_latest_runtime_matching_language_version(
+      this.language,
+      this.version.raw
+    );
+
+    logger.debug("Unregistering runtime");
+    runtime.unregister();
+
+    logger.debug("Cleaning files from disk");
+    await fs.rmdir(this.install_path, { recursive: true });
+
+    logger.info(`Uninstalled ${this.language}-${this.version.raw}`);
 
     return {
       language: this.language,
