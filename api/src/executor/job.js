@@ -71,7 +71,7 @@ class Job {
     logger.debug(`Transfering ownership uid=${this.uid} gid=${this.gid}`);
 
     await fs.mkdir(this.dir);
-    await fs.chown(this.dir, this.uid, this.gid);
+    // await fs.chown(this.dir, this.uid, this.gid);
 
     for (const file of this.files) {
       let file_path = path.join(this.dir, file.name);
