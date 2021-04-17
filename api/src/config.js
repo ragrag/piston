@@ -81,7 +81,7 @@ const options = [
     validators: [],
   },
   {
-    key: "disable_networking",
+    key: "enable_unshare",
     desc: "Set to true to disable networking",
     default: true,
     validators: [],
