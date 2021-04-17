@@ -277,10 +277,11 @@ class Job {
       }
       //Wrong Answer
       if (this.expected_output) {
-        run[i].stdout = run[i].stdout.replace(/^\s+|\s+$/g, "");
-        expected_output = expected_output.replace(/^\s+|\s+$/g, "");
-        console.log(run[i].stdout, expected_output);
-        if (run[i].stdout !== this.expected_output[i]) {
+        run_output = run[i].stdout.replace(/(\r\n|\n|\r)/gm, "");
+        run_expected_output = expected_output.replace(/(\r\n|\n|\r)/gm, "");
+
+        console.log(run_output, run_expected_output);
+        if (run_output !== run_expected_output) {
           return {
             compile,
             run,
