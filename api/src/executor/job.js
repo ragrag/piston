@@ -284,7 +284,6 @@ class Job {
           .replace(/(\s\r\n|\s\n|\s\r)/gm, "")
           .trim();
 
-        console.log(run_output, run_expected_output);
         if (run_output !== run_expected_output) {
           return {
             compile,
