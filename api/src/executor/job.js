@@ -87,7 +87,7 @@ class Job {
 
   async safe_call(file, args, timeout, stdin = "") {
     return new Promise((resolve, reject) => {
-      const nonetwork = config.enable_unshare ? ["nosocket"] : [];
+      const nonetwork = config.disable_networking ? ["nosocket"] : [];
 
       const prlimit = [
         "prlimit",
