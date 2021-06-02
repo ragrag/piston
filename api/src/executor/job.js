@@ -278,10 +278,10 @@ class Job {
       //Wrong Answer
       if (this.expected_output) {
         const run_output = run[i].stdout
-          .replace(/(\s\r\n|\s\n|\s\r|\r)/gm, "")
+          .replace(/(\s\r\n|\s\n|\s\r|\r\n)/gm, "")
           .trim();
         const run_expected_output = expected_output
-          .replace(/(\s\r\n|\s\n|\s\r|\r)/gm, "")
+          .replace(/(\s\r\n|\s\n|\s\r|\r\n)/gm, "")
           .trim();
 
         if (run_output !== run_expected_output) {
