@@ -284,7 +284,7 @@ class Job {
           .replace(/(\s\r\n|\s\n|\s\r)/gm, "")
           .trim();
 
-        if (run_output !== run_expected_output) {
+        if (run_output.localeCompare(run_expected_output) !== 0) {
           return {
             compile,
             run,
