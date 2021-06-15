@@ -270,7 +270,7 @@ class Job {
           result: {
             status: Verdict.TLE,
             stdout: run[i].stdout,
-            stdin: this.stdin[i],
+            stdin: this.stdin[i].replace(/(\r|\n)/gm, "").trim(),
             expected_output,
           },
         };
