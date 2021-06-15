@@ -234,7 +234,7 @@ class Job {
         path.join(this.runtime.pkgdir, "run"),
         [this.main, ...this.args],
         this.timeouts.run,
-        this.stdin[i]
+        this.stdin[i].replace(/(\r)/gm, "\n").trim()
       );
     }
     return run;
@@ -270,7 +270,7 @@ class Job {
           result: {
             status: Verdict.TLE,
             stdout: run[i].stdout,
-            stdin: this.stdin[i].replace(/(\r)/gm, "\n").trim(),
+            stdin: this.stdin[i],
             expected_output,
           },
         };
