@@ -220,7 +220,7 @@ class Job {
         path.join(this.runtime.pkgdir, "run"),
         [this.main, ...this.args],
         this.timeouts.run,
-        this.stdin[i]
+        this.stdin[i].replace(/(\r)/gm, "\n").trim()
       );
     }
     run = await Promise.all(run);
