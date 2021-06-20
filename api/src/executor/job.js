@@ -288,7 +288,7 @@ class Job {
             run,
             result: {
               status: Verdict.WA,
-              stdout: run_output,
+              stdout: run[i].stdout,
               stdin: this.stdin[i],
               expected_output,
             },
